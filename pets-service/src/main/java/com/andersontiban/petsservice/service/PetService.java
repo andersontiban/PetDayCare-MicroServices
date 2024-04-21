@@ -12,5 +12,5 @@ public interface PetService {
 
     List<PetsEntity> getPets();
 
-    PetsEntity getPetByOwnerId(final Long ownerId);
+    List<PetsEntity> getPetsByOwnerId(final Long ownerId);
 }
