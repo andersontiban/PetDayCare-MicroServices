@@ -30,11 +30,16 @@ public class PetController {
         return ResponseEntity.status(HttpStatus.OK).body(petService.getPetById(petId));
     }
 
+    /**
+     * Returns a list of pets by ownerId
+     * Method is also used by Owner Service via GetExchange
+     *
+     */
     @GetMapping("/owner/{ownerId}")
-    public ResponseEntity<PetsEntity> getByOwnerId(@PathVariable final long ownerId) {
-        PetsEntity pet = petService.getPetByOwnerId(ownerId);
-        if (pet != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(pet);
+    public ResponseEntity<List<PetsEntity>> getByOwnerId(@PathVariable final long ownerId) {
+        List<PetsEntity> pets = petService.getPetsByOwnerId(ownerId);
+        if (!pets.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.OK).body(pets);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
