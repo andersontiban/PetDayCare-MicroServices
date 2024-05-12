@@ -2,6 +2,7 @@ package com.andersontiban.ownerservice.service;
 
 import com.andersontiban.ownerservice.client.PetsClient;
 import com.andersontiban.ownerservice.model.OwnerEntity;
+import com.andersontiban.ownerservice.model.PetsEntity;
 import com.andersontiban.ownerservice.repository.OwnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OwnerServiceImpl implements OwnerService{
@@ -84,8 +86,12 @@ public class OwnerServiceImpl implements OwnerService{
     public List<OwnerEntity> getOwnersAndPets() {
         List<OwnerEntity> owners = repository.findAll();
 
-        owners.forEach(owner ->
-                owner.setPet(petsClient.getByOwnerId(owner.getId())));
+        owners.forEach(owner -> {
+            List<PetsEntity> pets = petsClient.getByOwnerId(owner.getId());
+            if (!pets.isEmpty()) {
+                owner.setPetNames(pets.stream().map(PetsEntity::getName).collect(Collectors.toList()));
+            }
+        });
         return owners;
     }
 }

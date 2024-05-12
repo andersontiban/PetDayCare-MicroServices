@@ -18,12 +18,11 @@ public class OwnerEntity {
 
     private String name;
 
-
     private String phoneNumber;
 
-    //reference to pet entity by
-    private PetsEntity pet;
-
+    // Store pet IDs or handle via API calls
+    @Transient // This marks the field to be not persistent
+    private List<String> petNames = new ArrayList<>();
 
     public OwnerEntity() {
     }
