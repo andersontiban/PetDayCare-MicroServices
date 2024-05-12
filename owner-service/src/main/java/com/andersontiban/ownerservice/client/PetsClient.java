@@ -7,9 +7,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
 
+import java.util.List;
+
 @HttpExchange
 public interface PetsClient {
 
     @GetExchange("pets/owner/{ownerId}")
-    public PetsEntity getByOwnerId(@PathVariable final long ownerId);
+    //make method name more descriptive as to what it get, getpetlistbyOwnerID
+    public List<PetsEntity> getByOwnerId(@PathVariable final long ownerId);
 }
