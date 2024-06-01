@@ -5,8 +5,9 @@ import com.andersontiban.ownerservice.model.OwnerEntity;
 import com.andersontiban.ownerservice.model.PetsEntity;
 import com.andersontiban.ownerservice.repository.OwnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class OwnerServiceImpl implements OwnerService{
     }
 
     @Override
+    @Cacheable("owners")
     public List<OwnerEntity> getAllOwners() {
         return repository.findAll();
     }
