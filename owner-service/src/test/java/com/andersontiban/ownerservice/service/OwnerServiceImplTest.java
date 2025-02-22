@@ -39,14 +39,6 @@ class OwnerServiceImplTest {
     }
 
     @Test
-    void getOwnerById() {
-        //when
-        ownerService.getOwnerById(1L);
-        //then
-        verify(ownerRepository).findById(1L);
-    }
-
-    @Test
     void addOwner() {
         //given
         OwnerEntity testOwner = new OwnerEntity(

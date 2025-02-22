@@ -9,12 +9,10 @@ import java.util.Optional;
 public interface OwnerService {
     List<OwnerEntity> getAllOwners();
 
-    Optional<OwnerEntity> getOwnerById(Long id);
-
     ResponseEntity<Object> addOwner(OwnerEntity owner);
 
     ResponseEntity<OwnerEntity> getOwner(Long id);
 
-    ResponseEntity<Object> updateOwner(Long id, OwnerEntity owner);
+    ResponseEntity<Object> updateOwner(OwnerEntity owner);
     List<OwnerEntity> getOwnersAndPets();
 }
