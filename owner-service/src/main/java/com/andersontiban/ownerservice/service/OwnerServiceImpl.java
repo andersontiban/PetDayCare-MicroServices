@@ -4,6 +4,7 @@ import com.andersontiban.ownerservice.client.PetsClient;
 import com.andersontiban.ownerservice.model.OwnerEntity;
 import com.andersontiban.ownerservice.model.PetsEntity;
 import com.andersontiban.ownerservice.repository.OwnerRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
@@ -32,15 +33,9 @@ public class OwnerServiceImpl implements OwnerService{
         return repository.findAll();
     }
 
-    // helper method. Return owner from db
-    @Override
-    public Optional<OwnerEntity> getOwnerById(Long id) {
-        return repository.findById(id);
-    }
-
     //add owner
     @Override
-    public ResponseEntity<Object> addOwner(OwnerEntity owner) {
+    public ResponseEntity<Object> addOwner(final OwnerEntity owner) {
         //check if owner already in db, if true return error or something
         OwnerEntity existingOwner = repository.findByName(owner.getName());
 
@@ -63,22 +58,18 @@ public class OwnerServiceImpl implements OwnerService{
         }
     }
 
-    //edit existing owner
     @Override
-    public ResponseEntity<Object> updateOwner(Long id, OwnerEntity owner) {
-        Optional<OwnerEntity> ownerOptional = getOwnerById(id);
+    public ResponseEntity<Object> updateOwner(OwnerEntity owner) {
+        if (owner.getId() == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Owner ID is required");
 
-        if (ownerOptional.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Owner does not exist");
-
-        OwnerEntity ownerEntity = ownerOptional.get();
-
+        OwnerEntity ownerEntity = repository.findById(owner.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Owner does not exist"));
         if (owner.getName() != null) {
             ownerEntity.setName(owner.getName());
         }
         if (owner.getPhoneNumber() != null) {
             ownerEntity.setPhoneNumber(owner.getPhoneNumber());
         }
-        // see if this is the best way to return, save to dbv first then return or just return ?
         OwnerEntity updatedOwner = repository.save(ownerEntity);
         return ResponseEntity.status(HttpStatus.OK).body(updatedOwner);
 
