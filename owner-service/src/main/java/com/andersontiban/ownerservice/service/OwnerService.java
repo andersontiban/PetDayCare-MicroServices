@@ -14,5 +14,4 @@ public interface OwnerService {
     ResponseEntity<OwnerEntity> getOwner(Long id);
 
     ResponseEntity<Object> updateOwner(OwnerEntity owner);
-    List<OwnerEntity> getOwnersAndPets();
 }

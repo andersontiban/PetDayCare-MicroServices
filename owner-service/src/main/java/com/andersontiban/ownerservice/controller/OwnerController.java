@@ -1,6 +1,5 @@
 package com.andersontiban.ownerservice.controller;
 
-import com.andersontiban.ownerservice.client.PetsClient;
 import com.andersontiban.ownerservice.model.OwnerEntity;
 import com.andersontiban.ownerservice.service.OwnerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +41,4 @@ public class OwnerController {
         return ownerService.updateOwner(owner);
     }
 
-    //using http exchange
-    @GetMapping("/with-pets")
-    public List<OwnerEntity> findAllWithPets() {
-        List<OwnerEntity> owners = ownerService.getOwnersAndPets();
-        return owners;
-    }
 }
