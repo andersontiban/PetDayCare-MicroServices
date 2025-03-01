@@ -1,0 +1,73 @@
+version: "3.8"
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.11-management
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - app-network
+
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_DB: OwnerService
+      POSTGRES_USER: andersontiban
+      POSTGRES_PASSWORD: test
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+
+  service-registry:
+    build:
+      context: ./service-registry
+    container_name: service-registry
+    ports:
+      - "8761:8761"
+    networks:
+      - app-network
+
+  owner-service:
+    build: ./owner-service
+    container_name: owner-service
+    depends_on:
+      - service-registry
+      - postgres
+    ports:
+      - "8081:8081"
+    environment:
+#      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/OwnerService
+      SPRING_DATASOURCE_USERNAME: andersontiban
+      SPRING_DATASOURCE_PASSWORD: test
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+    networks:
+      - app-network
+
+  pets-service:
+    build: ./pets-service
+    container_name: pets-service
+    depends_on:
+      - service-registry
+      - postgres
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/OwnerService
+      SPRING_DATASOURCE_USERNAME: andersontiban
+      SPRING_DATASOURCE_PASSWORD: test
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+#    - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
